@@ -1,6 +1,7 @@
 package proof.of.concept;
 
 import com.company.IOUtils;
+import com.company.Metadata;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,13 +22,13 @@ public class DemoDecompression {
 
 
     public static void main(String[] args) {
-        HashMap<Integer, String> map = IOUtils.readTree("dictionary.table.txt");
-        for (Map.Entry <Integer, String> entry: map.entrySet()) {
+        Metadata metadata = IOUtils.readMetadata("metadata.table.txt");
+        for (Map.Entry <Integer, String> entry: metadata.getDecodingTable().entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
         byte[] decompressedBytes = IOUtils.readFile("compressedResult.txt.hr");
-        int significantBitesNumber = decompressedBytes[0];
-        System.out.println("Read significantBitesNumber: " + significantBitesNumber );
+        // int significantBitesNumber = decompressedBytes[0];
+        System.out.println("Read significantBitesNumber: " + metadata.getSignificantBitsNumber());
         int[] bytes = new int[decompressedBytes.length];
         for(int i = 0; i < decompressedBytes.length; i++) {
             bytes[i] = decompressedBytes[i] & 0xFF;

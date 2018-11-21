@@ -23,36 +23,34 @@ public class IOUtils {
         return content;
     }
 
-    public static HashMap<Integer, String> readTree(String dictPath) {
-        HashMap<Integer, String> tree = null;
+    public static Metadata readMetadata(String dictPath) {
+        Metadata metadata = null;
         try (FileInputStream fis = new FileInputStream(dictPath)) {
             ObjectInputStream ois = new ObjectInputStream(fis);
-            tree = (HashMap<Integer, String>) ois.readObject();
+            metadata = (Metadata) ois.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return tree;
+        return metadata;
     }
 
-    public static void writeFile(long initialSize,
-                                  byte[] content,
-                                  Map<Integer, String> table,
-                                  String compressedFileName,
-                                  String treeFileName) {
+    public static void writeFile(byte[] content,
+                                 Metadata metadata,
+                                 String compressedFileName,
+                                 String treeFileName) {
         try (FileOutputStream compressedFos = new FileOutputStream(new File(compressedFileName));
              FileOutputStream treeFos = new FileOutputStream(new File(treeFileName))) {
 
             ObjectOutputStream oos = new ObjectOutputStream(treeFos);
-            oos.writeObject(table);
+            oos.writeObject(metadata);
             oos.close();
-            compressedFos.write((byte)initialSize);
             compressedFos.write(content);
             // Метод write берет первый байт из числа и записывает.
             // Чтобы записать 32-битное число, нам нужно записать каждый его бит отдельно.
             /*
-            // compressedFos.write((byte)initialSize);
+            //
             compressedFos.write((byte)initialSize >> 0);
             compressedFos.write((byte)initialSize >> 8);
             compressedFos.write((byte)initialSize >> 16);

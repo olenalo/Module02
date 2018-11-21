@@ -1,6 +1,7 @@
 package proof.of.concept;
 
 import com.company.IOUtils;
+import com.company.Metadata;
 import com.company.Node;
 
 import java.util.*;
@@ -49,7 +50,7 @@ public class DemoCompression {
     public static void main(String[] args) {
 
         // Proof of concept
-        inputDataBytes = IOUtils.readFile("inputDataTest.txt"); // ada.png inputDataTest.txt  inputData.txt
+        inputDataBytes = IOUtils.readFile("ada.png"); // ada.png inputDataTest.txt  inputData.txt
         System.out.println("Read input bytes: " + Arrays.toString(inputDataBytes));
         long[] frequencies = new long[256];
 
@@ -89,7 +90,8 @@ public class DemoCompression {
                 buildCodes("", root, i);
             }
         }
-        for (Map.Entry <Integer, String> entry: codes.entrySet()) { // TODO consider <Byte, String>
+        Metadata metadata = new Metadata(codes);
+        for (Map.Entry <Integer, String> entry: metadata.getDecodingTable().entrySet()) { // TODO consider <Byte, String>
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
         System.out.println("-------");
@@ -108,15 +110,15 @@ public class DemoCompression {
         for (int i = 0; i < compressionResult.length; i++) {
             compressionResult[i] = resultBytes.get(i);
         }
+        metadata.setSignificantBitsNumber(significantBitsNumber);
 
-        System.out.println("significantBitsNumber: " + significantBitsNumber);
+        System.out.println("significantBitsNumber: " + metadata.getSignificantBitsNumber());
         System.out.println(Arrays.toString(compressionResult));
 
-        IOUtils.writeFile(significantBitsNumber,
-                compressionResult,
-                codes,
-                "compressedResult.txt.hr",
-                "dictionary.table.txt"
+        IOUtils.writeFile(compressionResult,
+                          metadata,
+                          "compressedResult.txt.hr",
+                          "metadata.table.txt"
         );
     }
 
