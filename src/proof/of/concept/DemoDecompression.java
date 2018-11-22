@@ -85,7 +85,6 @@ public class DemoDecompression {
                 addBit(bit);
             }
         }
-        // TODO try to avoid the next loop
         byte[] decompressionResult = new byte[resultBytes.size()];
         for (int i = 0; i < decompressionResult.length; i++) {
             decompressionResult[i] = resultBytes.get(i);

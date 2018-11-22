@@ -18,14 +18,13 @@ public class DemoCompression {
     public static ArrayList<Byte> resultBytes = new ArrayList<>();
     public static ArrayList<String> resultBits = new ArrayList<>();  // TODO remove; debug only
 
-    // TODO refactor e.g. introduce a flag `lastBits` or so
-    public static void addBit(char bit, int inputBytesIndex, int bitsIndex, String currentByteCodes) {
+    public static void addBit(char bit, boolean lastByte) {
         if (bitsCashCounter < Configs.EIGHT_BITS) {
             bitsCash.append(bit);
             bitsCashCounter++;
             significantBitsNumber++;
             // Add the last bunch of bits if needed
-            if (inputBytesIndex == inputDataBytes.length - 1 && bitsIndex == currentByteCodes.length() - 1) {
+            if (lastByte) {
                 int bitsToAddNumber = Configs.EIGHT_BITS - bitsCash.toString().length();
                 // Add trailing zero bits if needed
                 if (bitsToAddNumber > 0) {
@@ -42,7 +41,7 @@ public class DemoCompression {
             resultBytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
             bitsCash = new StringBuilder();
             bitsCashCounter = 0;
-            addBit(bit, inputBytesIndex, bitsIndex, currentByteCodes);
+            addBit(bit, lastByte);
         }
     }
 
@@ -114,12 +113,15 @@ public class DemoCompression {
             char[] charArray = byteCodes.toCharArray();
             for (int j = 0; j < charArray.length; j++) {
                 char bit = charArray[j];
-                addBit(bit, i, j, byteCodes);
+                boolean lastByte = false;
+                if (i == inputDataBytes.length - 1 && j == byteCodes.length() - 1) {
+                    lastByte = true;
+                }
+                addBit(bit, lastByte);
             }
         }
 
-        // TODO try to avoid the next loop
-        byte[] compressionResult = new byte[resultBytes.size()]; // resultBytes.toArray(new Byte[0]);
+        byte[] compressionResult = new byte[resultBytes.size()];
         for (int i = 0; i < compressionResult.length; i++) {
             compressionResult[i] = resultBytes.get(i);
         }
