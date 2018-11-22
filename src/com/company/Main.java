@@ -14,14 +14,16 @@ public class Main {
 
         int lastIndex = initialFileName.lastIndexOf(".");
         if (lastIndex == -1) {
-            throw new IllegalArgumentException("Filename should contain extension.");
+            throw new IllegalArgumentException("Filename should contain the extension.");
         }
         String inputFileExtension = initialFileName.substring(lastIndex);
 
         if(inputFileExtension.equals(".hf")){
             String decompressionFileName = getDecompressionFileName();
+            // TODO
         } else {
             Compressor compressor = new Compressor(initialFileName);
+            compressor.save(compressor.compress().getBytes());
         }
     }
 

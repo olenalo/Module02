@@ -60,7 +60,7 @@ public class DemoCompression {
     public static void compress(String inputFilename, String metadataFilename, String compressedFileName) {
         // TODO add filenames' extensions checks
 
-        inputDataBytes = IOUtils.readFile(inputFilename); // imgAda.png input1.txt  input2.txt
+        inputDataBytes = IOUtils.readFile(inputFilename);
         System.out.println("Read input bytes: " + Arrays.toString(inputDataBytes));
         long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
 
