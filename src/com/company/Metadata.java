@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Metadata implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final Map<Integer, String> decodingTable;
+    private final Map<Integer, String> decodingTable;   // TODO consider <Byte, String>
     private long significantBitsNumber;
 
     public Metadata(Map<Integer, String> decodingTable) {
@@ -23,5 +23,4 @@ public class Metadata implements Serializable {
     public void setSignificantBitsNumber(long significantBitsNumber) {
         this.significantBitsNumber = significantBitsNumber;
     }
-
 }

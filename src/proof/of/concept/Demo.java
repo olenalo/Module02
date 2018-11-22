@@ -1,10 +1,14 @@
-package com.company;
+package proof.of.concept;
+
+import com.company.Configs;
 
 import java.util.Scanner;
 
 import static com.company.IOUtils.getDecompressionFileName;
+import static proof.of.concept.DemoCompression.compress;
+import static proof.of.concept.DemoDecompression.decompress;
 
-public class Main {
+public class Demo {
 
     public static void main(String[] args) {
 
@@ -19,10 +23,9 @@ public class Main {
         String inputFileExtension = initialFileName.substring(lastIndex);
 
         if(inputFileExtension.equals(".hf")){
-            String decompressionFileName = getDecompressionFileName();
+            decompress(initialFileName, Configs.METADATA_TABLE_FILENAME, getDecompressionFileName());
         } else {
-            Compressor compressor = new Compressor(initialFileName);
+            compress(initialFileName, Configs.METADATA_TABLE_FILENAME, Configs.COMPRESSED_FILENAME);
         }
     }
-
 }

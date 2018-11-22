@@ -3,9 +3,16 @@ package com.company;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class IOUtils {
 
+    public static String getDecompressionFileName() {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Enter the decompressed file name: ");
+            return scanner.next();
+        }
+    }
     public static byte[] readFile(String filename) {
         byte[] content = null;
         int i;

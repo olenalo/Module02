@@ -1,5 +1,6 @@
 package proof.of.concept;
 
+import com.company.Configs;
 import com.company.IOUtils;
 import com.company.Metadata;
 import com.company.Node;
@@ -12,27 +13,36 @@ public class DemoCompression {
     public static Map<Integer, String> codes = new HashMap<>();
     public static long significantBitsNumber = 0;
 
-    public static StringBuilder bitsCash = new StringBuilder(); // new char[8];  // TODO shouldn't it be an array?
+    public static StringBuilder bitsCash = new StringBuilder();
     public static int bitsCashCounter = 0;
     public static ArrayList<Byte> resultBytes = new ArrayList<>();
-    // public static byte[] resultBytes = new byte[inputDataBytes.length];
+    public static ArrayList<String> resultBits = new ArrayList<>();  // TODO remove; debug only
 
-    public static void addBit(char bit, int inputIndex) {
-        if (bitsCashCounter < 8) {
+    // TODO refactor e.g. introduce a flag `lastBits` or so
+    public static void addBit(char bit, int inputBytesIndex, int bitsIndex, String currentByteCodes) {
+        if (bitsCashCounter < Configs.EIGHT_BITS) {
             bitsCash.append(bit);
             bitsCashCounter++;
             significantBitsNumber++;
-            if (inputIndex == inputDataBytes.length - 1) {
-                for (int i = 0; i < 8 - bitsCash.length(); i++) {
-                    bitsCash.append("0");
+            // Add the last bunch of bits if needed
+            if (inputBytesIndex == inputDataBytes.length - 1 && bitsIndex == currentByteCodes.length() - 1) {
+                int bitsToAddNumber = Configs.EIGHT_BITS - bitsCash.toString().length();
+                // Add trailing zero bits if needed
+                if (bitsToAddNumber > 0) {
+                    for (int i = 0; i < bitsToAddNumber; i++) {
+                        bitsCash.append("0");
+                    }
                 }
+                resultBits.add(bitsCash.toString());
                 resultBytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
+                // bitsCash = new StringBuilder();
             }
         } else {
+            resultBits.add(bitsCash.toString()); // debug only
             resultBytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
             bitsCash = new StringBuilder();
             bitsCashCounter = 0;
-            addBit(bit, inputIndex);
+            addBit(bit, inputBytesIndex, bitsIndex, currentByteCodes);
         }
     }
 
@@ -47,12 +57,12 @@ public class DemoCompression {
         }
     }
 
-    public static void main(String[] args) {
+    public static void compress(String inputFilename, String metadataFilename, String compressedFileName) {
+        // TODO add filenames' extensions checks
 
-        // Proof of concept
-        inputDataBytes = IOUtils.readFile("ada.png"); // ada.png inputDataTest.txt  inputData.txt
+        inputDataBytes = IOUtils.readFile(inputFilename); // imgAda.png input1.txt  input2.txt
         System.out.println("Read input bytes: " + Arrays.toString(inputDataBytes));
-        long[] frequencies = new long[256];
+        long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
 
         // Count occurrences of each byte in the initial input data
         for (byte b: inputDataBytes) {
@@ -91,21 +101,24 @@ public class DemoCompression {
             }
         }
         Metadata metadata = new Metadata(codes);
-        for (Map.Entry <Integer, String> entry: metadata.getDecodingTable().entrySet()) { // TODO consider <Byte, String>
-            System.out.println(entry.getKey() + ": " + entry.getValue());
+        for (Map.Entry <Integer, String> entry: metadata.getDecodingTable().entrySet()) {
+            System.out.print(entry.getKey() + ": " + entry.getValue() + "; ");
         }
-        System.out.println("-------");
+        System.out.println("\n-------");
 
         // Compress
+        // Collect bits
         for (int i = 0; i < inputDataBytes.length; i++) {
-            String byteCodes = codes.get((int)inputDataBytes[i] & 0xFF);
-            if (byteCodes != null) {  // TODO test image compression
-                for (char bit : byteCodes.toCharArray()) {
-                    addBit(bit, i);
-                }
+            byte inputDataByte = inputDataBytes[i];
+            String byteCodes = codes.get((int) inputDataByte & 0xFF);
+            char[] charArray = byteCodes.toCharArray();
+            for (int j = 0; j < charArray.length; j++) {
+                char bit = charArray[j];
+                addBit(bit, i, j, byteCodes);
             }
         }
-        // TODO try to avoid the next conversion
+
+        // TODO try to avoid the next loop
         byte[] compressionResult = new byte[resultBytes.size()]; // resultBytes.toArray(new Byte[0]);
         for (int i = 0; i < compressionResult.length; i++) {
             compressionResult[i] = resultBytes.get(i);
@@ -113,13 +126,12 @@ public class DemoCompression {
         metadata.setSignificantBitsNumber(significantBitsNumber);
 
         System.out.println("significantBitsNumber: " + metadata.getSignificantBitsNumber());
-        System.out.println(Arrays.toString(compressionResult));
+        System.out.println("compressionResult: " + Arrays.toString(compressionResult));
 
         IOUtils.writeFile(compressionResult,
                           metadata,
-                          "compressedResult.txt.hr",
-                          "metadata.table.txt"
+                          compressedFileName,
+                          metadataFilename
         );
     }
-
 }
