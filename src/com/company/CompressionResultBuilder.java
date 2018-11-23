@@ -48,4 +48,15 @@ public class CompressionResultBuilder {
         return new CompressionResult(this.bytes, this.metadata);
     }
 
+    @Override
+    public String toString() {
+        return "CompressionResultBuilder{" +
+                "metadata=" + metadata +
+                ", bytes=" + bytes +
+                ", bits=" + bits +
+                ", significantBitsNumber=" + significantBitsNumber +
+                ", bitsCash=" + bitsCash +
+                ", bitsCashCounter=" + bitsCashCounter +
+                '}';
+    }
 }

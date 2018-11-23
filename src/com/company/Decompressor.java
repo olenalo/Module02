@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class Decompressor {
+public class Decompressor implements Processor {
     private String filename;
     private byte[] inputBytes;
     private byte[] bytes;
@@ -21,7 +21,7 @@ public class Decompressor {
     }
 
     // Get the first matched case
-    public static int getKeyByValue(String value, Map<Integer, String> map) {
+    private static int getKeyByValue(String value, Map<Integer, String> map) {
         for (Map.Entry <Integer, String> entry: map.entrySet()) {
             if (value.equals(entry.getValue())) {
                 return entry.getKey();
@@ -41,7 +41,7 @@ public class Decompressor {
     }
 
     // TODO pass `Bit` type
-    public void addBit(char bit) {
+    private void addBit(char bit) {
         this.bitsCash.append(bit);
         if (this.metadata.getDecodingTable().containsValue(this.bitsCash.toString())) {
             byte aByte = (byte)getKeyByValue(this.bitsCash.toString(), this.metadata.getDecodingTable()) ;
@@ -50,7 +50,7 @@ public class Decompressor {
         }
     }
 
-    public String[] fetchBits() {
+    private String[] fetchBits() {
         int[] inputBytes = new int[this.inputBytes.length]; // TODO remove, debug only
         String[] bitsStrings = new String[this.inputBytes.length];
         int bitsToRemoveNumber = (int)(this.inputBytes.length * 8 - metadata.getSignificantBitsNumber());
@@ -74,7 +74,7 @@ public class Decompressor {
         return bitsStrings;
     }
 
-    public void decodeBits(String[] bitsStrings) {
+    private void decodeBits(String[] bitsStrings) {
         for (String bits: bitsStrings) {
             for (char bit: bits.toCharArray()) {
                 this.addBit(bit);
@@ -83,7 +83,7 @@ public class Decompressor {
     }
 
     // TODO consider getting rid of it
-    public void convertResult() {
+    private void convertResult() {
         byte[] decompressionResult = new byte[this.resultBytes.size()];
         for (int i = 0; i < decompressionResult.length; i++) {
             decompressionResult[i] = this.resultBytes.get(i);
@@ -92,7 +92,7 @@ public class Decompressor {
         this.bytes = decompressionResult;
     }
 
-    public Decompressor decompress() {
+    public Decompressor process() {
         String[] bitsStrings = this.fetchBits();
         this.decodeBits(bitsStrings);
         this.convertResult();

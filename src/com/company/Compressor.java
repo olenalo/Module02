@@ -2,9 +2,9 @@ package com.company;
 
 import java.util.*;
 
-public class Compressor {
+public class Compressor implements Processor {
     private String filename;
-    private byte[] inputDataBytes; // TODO shouldn't it be of `int[]` type?
+    private byte[] inputDataBytes;
     private CompressionResult compressionResult;
 
     public Compressor(String initialFileName, String filename) {
@@ -14,10 +14,10 @@ public class Compressor {
         this.inputDataBytes = IOUtils.readFile(initialFileName);
     }
 
-    public Map<Integer, String> buildCodes(String storedPath,
+    private Map<Integer, String> buildCodes(String storedPath,
                                            Node node,
                                            int frequencyIndex,
-                                           Map<Integer, String> codes) { // TODO consider removing `codes` param
+                                           Map<Integer, String> codes) {
         if (node.getLeft() == null && node.getRight() == null) {
             if (Integer.valueOf(node.getValue()).equals(frequencyIndex)) {
                 codes.put(frequencyIndex, storedPath);
@@ -30,7 +30,7 @@ public class Compressor {
     }
 
     // Count occurrences of each byte in the initial input data
-    public long[] defineFrequencies() {
+    private long[] defineFrequencies() {
         long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
         for (byte b: this.inputDataBytes) {
             int i = b & 0xFF;
@@ -39,7 +39,7 @@ public class Compressor {
         return frequencies;
     }
 
-    public PriorityQueue<Node> createNodes(long[] frequencies) {
+    private PriorityQueue<Node> createNodes(long[] frequencies) {
         PriorityQueue<Node> nodes = new PriorityQueue<>(Comparator.comparingLong(Node::getWeight));
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
@@ -52,7 +52,7 @@ public class Compressor {
         return nodes;
     }
 
-    public PriorityQueue<Node> buildHuffmanTree(long[] frequencies) {
+    private PriorityQueue<Node> buildHuffmanTree(long[] frequencies) {
         PriorityQueue<Node> nodes = createNodes(frequencies);
         while (nodes.size() > 1) {
             Node node1 = nodes.poll();
@@ -67,24 +67,17 @@ public class Compressor {
         return nodes;
     }
 
-    public Map<Integer, String> buildHuffmanCodes(Node root, long[] frequencies) {
+    private Map<Integer, String> buildHuffmanCodes(Node root, long[] frequencies) {
         Map<Integer, String> codes = new HashMap<>();
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
-                codes = buildCodes("", root, i, codes); // TODO we are assigning each time...
+                codes = buildCodes("", root, i, codes);
             }
         }
         return codes;
     }
 
-    public Compressor compress() {
-        CompressionResultBuilder builder = new CompressionResultBuilder();
-        long[] frequencies = this.defineFrequencies();
-        PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
-        Map<Integer, String> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
-        Metadata metadata = new Metadata(codes);
-
-        // Collect bits
+    private void collectBits(Metadata metadata, CompressionResultBuilder builder) {
         for (int i = 0; i < this.inputDataBytes.length; i++) {
             String byteCodes = metadata.getCode(this.inputDataBytes[i]);
             char[] charArray = byteCodes.toCharArray(); // TODO store bits in String[] or Bit[], not in `String`
@@ -97,6 +90,15 @@ public class Compressor {
                 builder.addBit(bit, isLastByte);
             }
         }
+    }
+
+    public Compressor process() {
+        CompressionResultBuilder builder = new CompressionResultBuilder();
+        long[] frequencies = this.defineFrequencies();
+        PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
+        Map<Integer, String> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
+        Metadata metadata = new Metadata(codes);
+        this.collectBits(metadata, builder);
         this.compressionResult = builder
                 .setMetadata(metadata)
                 .build();
