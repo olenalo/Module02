@@ -21,6 +21,7 @@ public class IOUtils {
             return scanner.next();
         }
     }
+
     public static byte[] readFile(String filename) {
         byte[] content = null;
         try (FileInputStream fis = new FileInputStream(new File(filename))) {
@@ -28,8 +29,8 @@ public class IOUtils {
             content = new byte[fis.available()];
             int counter = 0;
             // Read till the end of the stream
-            while((i = fis.read())!=-1) {
-                content[counter] = (byte)i;
+            while ((i = fis.read()) != -1) {
+                content[counter] = (byte) i;
                 counter++;
             }
         } catch (IOException e) {
