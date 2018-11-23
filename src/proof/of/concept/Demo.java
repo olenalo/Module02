@@ -1,6 +1,7 @@
 package proof.of.concept;
 
 import com.company.Configs;
+import com.company.IOUtils;
 
 import java.util.Scanner;
 
@@ -15,14 +16,9 @@ public class Demo {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the initial file name: ");
         String initialFileName = scanner.nextLine();
+        String inputFileExtension = IOUtils.checkFilenameExtension(initialFileName);
 
-        int lastIndex = initialFileName.lastIndexOf(".");
-        if (lastIndex == -1) {
-            throw new IllegalArgumentException("Filename should contain extension.");
-        }
-        String inputFileExtension = initialFileName.substring(lastIndex);
-
-        if(inputFileExtension.equals(".hf")){
+        if(inputFileExtension.equals(Configs.COMPRESSED_FILE_EXTENSION)){
             decompress(initialFileName, Configs.METADATA_TABLE_FILENAME, getDecompressionFileName());
         } else {
             compress(initialFileName, Configs.METADATA_TABLE_FILENAME, Configs.COMPRESSED_FILENAME);

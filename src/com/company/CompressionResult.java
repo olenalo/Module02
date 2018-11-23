@@ -20,12 +20,11 @@ public class CompressionResult {
         this.bytes = compressionResult;
     }
 
-    public void save() {
-        // TODO add filename extension check
-        IOUtils.writeFile(this.bytes,
-                          this.metadata,
-                          this.filename,
-                          Configs.METADATA_TABLE_FILENAME // TODO consider passing it with user input, here and for decompression
-        );
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 }

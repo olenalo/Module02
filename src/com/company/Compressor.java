@@ -6,9 +6,10 @@ public class Compressor {
 
     private String filename;
     private byte[] inputDataBytes; // TODO shouldn't it be of `int[]` type?
+    private CompressionResult compressionResult;
 
     public Compressor(byte[] bytes, String filename) {
-        // TODO check filename extension
+        IOUtils.checkFilenameExtension(filename);
         this.filename = filename;
         this.inputDataBytes = bytes;
     }
@@ -76,7 +77,7 @@ public class Compressor {
         return codes;
     }
 
-    public CompressionResult compress() {
+    public Compressor compress() {
         CompressionResultBuilder builder = new CompressionResultBuilder().setFilename(this.filename);
         long[] frequencies = this.defineFrequencies();
         PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
@@ -96,7 +97,18 @@ public class Compressor {
                 builder.addBit(bit, isLastByte);
             }
         }
-        return builder.setMetadata(metadata).build();
+        this.compressionResult = builder
+                .setMetadata(metadata)
+                .build();
+        return this;
+    }
+
+    public void save() {
+        IOUtils.writeFile(this.compressionResult.getBytes(),
+                this.compressionResult.getMetadata(),
+                this.filename,
+                Configs.METADATA_TABLE_FILENAME
+        );
     }
 
 }

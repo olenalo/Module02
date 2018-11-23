@@ -14,7 +14,7 @@ public class Decompressor {
     private ArrayList<Byte> resultBytes = new ArrayList<>();
 
     public Decompressor(byte[] bytes, Metadata metadata, String filename) {
-        // TODO check filename extension
+        IOUtils.checkFilenameExtension(filename);
         this.inputBytes = bytes;
         this.metadata = metadata;
         this.filename = filename;
@@ -92,10 +92,11 @@ public class Decompressor {
         this.bytes = decompressionResult;
     }
 
-    public void decompress() {
+    public Decompressor decompress() {
         String[] bitsStrings = this.fetchBits();
         this.decodeBits(bitsStrings);
         this.convertResult();
+        return this;
     }
 
     public void save() {

@@ -1,11 +1,17 @@
 package com.company;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class IOUtils {
+
+    public static String checkFilenameExtension(String filename) {
+        int lastIndex = filename.lastIndexOf(".");
+        if (lastIndex == -1) {
+            throw new IllegalArgumentException("Filename should contain the extension.");
+        }
+        return filename.substring(lastIndex);
+    }
 
     public static String getDecompressionFileName() {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -15,8 +21,8 @@ public class IOUtils {
     }
     public static byte[] readFile(String filename) {
         byte[] content = null;
-        int i;
         try (FileInputStream fis = new FileInputStream(new File(filename))) {
+            int i;
             content = new byte[fis.available()];
             int counter = 0;
             // Read till the end of the stream
@@ -49,7 +55,6 @@ public class IOUtils {
                                  String treeFileName) {
         try (FileOutputStream compressedFos = new FileOutputStream(new File(compressedFileName));
              FileOutputStream treeFos = new FileOutputStream(new File(treeFileName))) {
-
             ObjectOutputStream oos = new ObjectOutputStream(treeFos);
             oos.writeObject(metadata);
             oos.close();
