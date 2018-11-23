@@ -22,28 +22,30 @@ public class CompressionResultBuilder {
         bitsCash.clear();
     }
 
-    public CompressionResultBuilder addBit(Bit bit, boolean isLastByte) {
+    public CompressionResultBuilder addBit(Bit bit) {
         if (bitsCashCounter < Configs.EIGHT_BITS) {
             bitsCash.add(bit);
             bitsCashCounter++;
             significantBitsNumber++;
-            // TODO `addBit()` should add a singe bit as a method name suggests (add trailing bits somewhere else)
-            if (isLastByte) {
-                // Add trailing bits if needed
-                int bitsToAddNumber = Configs.EIGHT_BITS - convertBitsToString(bitsCash).length();
-                if (bitsToAddNumber > 0) {
-                    for (int i = 0; i < bitsToAddNumber; i++) {
-                        bitsCash.add(Bit.ZERO);
-                    }
-                }
-                this.formByte();
-            }
         } else {
             this.formByte();
             bitsCashCounter = 0;
-            addBit(bit, isLastByte);
+            addBit(bit);
         }
         return this;
+    }
+
+    /**
+     * Add trailing bits if needed.
+     */
+    public void addTrailingBits() {
+        int bitsToAddNumber = Configs.EIGHT_BITS - convertBitsToString(bitsCash).length();
+        if (bitsToAddNumber > 0) {
+            for (int i = 0; i < bitsToAddNumber; i++) {
+                bitsCash.add(Bit.ZERO);
+            }
+        }
+        this.formByte();
     }
 
     public CompressionResultBuilder setMetadata(Metadata metadata) {

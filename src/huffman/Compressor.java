@@ -6,6 +6,7 @@ import utils.IOUtils;
 
 import java.util.*;
 
+import static utils.ConversionUtils.convertBitsToString;
 import static utils.ConversionUtils.convertToBitArray;
 
 public class Compressor implements Processor {
@@ -98,13 +99,10 @@ public class Compressor implements Processor {
             Bit[] bits = metadata.getCode(this.inputDataBytes[i]);
             for (int j = 0; j < bits.length; j++) {
                 Bit bit = bits[j];
-                boolean isLastByte = false;
-                if (i == this.inputDataBytes.length - 1 && j == bits.length - 1) {
-                    isLastByte = true;
-                }
-                builder.addBit(bit, isLastByte);
+                builder.addBit(bit);
             }
         }
+        builder.addTrailingBits();
     }
 
     public Compressor process() {
