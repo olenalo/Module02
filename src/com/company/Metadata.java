@@ -5,11 +5,11 @@ import java.util.Map;
 
 public class Metadata implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final Map<Integer, String> decodingTable;   // TODO consider <Byte, String>
+    private Map<Integer, String> decodingTable;   // TODO consider <Byte, String>
     private long significantBitsNumber;
 
     public Metadata(Map<Integer, String> decodingTable) {
-        this.decodingTable = decodingTable;
+        this.decodingTable = decodingTable;  // TODO can be null, handle it
     }
 
     public Map<Integer, String> getDecodingTable() {
@@ -23,4 +23,26 @@ public class Metadata implements Serializable {
     public void setSignificantBitsNumber(long significantBitsNumber) {
         this.significantBitsNumber = significantBitsNumber;
     }
+
+    public String getCode(byte aByte) {
+        // TODO: consider getting rid of casting here
+        return decodingTable.get((int) aByte & 0xFF);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder(
+                "Metadata: " +
+                "\nsignificantBitsNumber - " + significantBitsNumber +
+                "; \ndecodingTable - ");
+        for (Map.Entry <Integer, String> entry: this.decodingTable.entrySet()) {
+            stringBuilder
+                    .append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue()).append("; ");
+        }
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
+    }
+
 }

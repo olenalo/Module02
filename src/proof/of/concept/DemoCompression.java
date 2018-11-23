@@ -18,13 +18,13 @@ public class DemoCompression {
     public static ArrayList<Byte> resultBytes = new ArrayList<>();
     public static ArrayList<String> resultBits = new ArrayList<>();  // TODO remove; debug only
 
-    public static void addBit(char bit, boolean lastByte) {
+    public static void addBit(char bit, boolean isLastByte) {
         if (bitsCashCounter < Configs.EIGHT_BITS) {
             bitsCash.append(bit);
             bitsCashCounter++;
             significantBitsNumber++;
             // Add the last bunch of bits if needed
-            if (lastByte) {
+            if (isLastByte) {
                 int bitsToAddNumber = Configs.EIGHT_BITS - bitsCash.toString().length();
                 // Add trailing zero bits if needed
                 if (bitsToAddNumber > 0) {
@@ -41,7 +41,7 @@ public class DemoCompression {
             resultBytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
             bitsCash = new StringBuilder();
             bitsCashCounter = 0;
-            addBit(bit, lastByte);
+            addBit(bit, isLastByte);
         }
     }
 
@@ -69,7 +69,7 @@ public class DemoCompression {
             frequencies[i]++;
         }
 
-        // Build the priority queue
+        // Build the initial nodes queue
         PriorityQueue<Node> nodes = new PriorityQueue<>(Comparator.comparingLong(Node::getWeight));
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
@@ -113,20 +113,20 @@ public class DemoCompression {
             char[] charArray = byteCodes.toCharArray();
             for (int j = 0; j < charArray.length; j++) {
                 char bit = charArray[j];
-                boolean lastByte = false;
+                boolean isLastByte = false;
                 if (i == inputDataBytes.length - 1 && j == byteCodes.length() - 1) {
-                    lastByte = true;
+                    isLastByte = true;
                 }
-                addBit(bit, lastByte);
+                addBit(bit, isLastByte);
             }
         }
+        metadata.setSignificantBitsNumber(significantBitsNumber);
 
+        // Convert to the expected format
         byte[] compressionResult = new byte[resultBytes.size()];
         for (int i = 0; i < compressionResult.length; i++) {
             compressionResult[i] = resultBytes.get(i);
         }
-        metadata.setSignificantBitsNumber(significantBitsNumber);
-
         System.out.println("significantBitsNumber: " + metadata.getSignificantBitsNumber());
         System.out.println("compressionResult: " + Arrays.toString(compressionResult));
 

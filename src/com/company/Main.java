@@ -18,12 +18,16 @@ public class Main {
         }
         String inputFileExtension = initialFileName.substring(lastIndex);
 
+        // TODO consider introducing some sort of the Fabric pattern here (processor.process())
         if(inputFileExtension.equals(".hf")){
             String decompressionFileName = getDecompressionFileName();
             // TODO
         } else {
-            Compressor compressor = new Compressor(initialFileName);
-            compressor.save(compressor.compress().getBytes());
+            CompressionResult result = new Compressor(
+                    IOUtils.readFile(initialFileName),
+                    Configs.COMPRESSED_FILENAME) // TODO consider
+                    .compress();
+            result.save();
         }
     }
 
