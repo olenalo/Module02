@@ -10,6 +10,12 @@ public class CompressionResultBuilder {
     private StringBuilder bitsCash = new StringBuilder();
     private int bitsCashCounter = 0;
 
+    private void formByte() {
+        bits.add(bitsCash.toString());
+        bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
+        bitsCash.setLength(0);
+    }
+
     // TODO pass `Bit` type
     public CompressionResultBuilder addBit(char bit, boolean isLastByte) {
         if (bitsCashCounter < Configs.EIGHT_BITS) {
@@ -24,14 +30,10 @@ public class CompressionResultBuilder {
                         bitsCash.append("0");
                     }
                 }
-                bits.add(bitsCash.toString());
-                bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
-                bitsCash.setLength(0);
+                this.formByte();
             }
         } else {
-            bits.add(bitsCash.toString());
-            bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
-            bitsCash.setLength(0);
+            this.formByte();
             bitsCashCounter = 0;
             addBit(bit, isLastByte);
         }
