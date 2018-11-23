@@ -6,7 +6,6 @@ import utils.IOUtils;
 
 import java.util.*;
 
-import static utils.ConversionUtils.convertBitsToString;
 import static utils.ConversionUtils.convertToBitArray;
 
 public class Compressor implements Processor {
