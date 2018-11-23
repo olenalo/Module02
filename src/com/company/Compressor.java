@@ -30,7 +30,12 @@ public class Compressor implements Processor {
         return codes;
     }
 
-    // Count occurrences of each byte in the initial input data
+    /**
+     * Count occurrences of each byte in the initial input data.
+     *
+     * @return frequencies with their indexes corresponding
+     *     to the input data's bytes.
+     */
     private long[] defineFrequencies() {
         long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
         for (byte b: this.inputDataBytes) {
@@ -62,7 +67,7 @@ public class Compressor implements Processor {
             newNode.setLeft(node1);
             newNode.setRight(node2);
             newNode.setWeight(node1.getWeight() + node2.getWeight());
-            // We only need `value` in initial nodes (not in the "merged" ones)
+            // We only need `value` in initial nodes (not here, in the "merged" ones)
             nodes.add(newNode);
         }
         return nodes;
@@ -72,7 +77,7 @@ public class Compressor implements Processor {
         Map<Integer, String> codes = new HashMap<>();
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
-                codes = buildCodes("", root, i, codes);
+                codes.putAll(buildCodes("", root, i, codes));
             }
         }
         return codes;
@@ -81,7 +86,7 @@ public class Compressor implements Processor {
     private void collectBits(Metadata metadata, CompressionResultBuilder builder) {
         for (int i = 0; i < this.inputDataBytes.length; i++) {
             String byteCodes = metadata.getCode(this.inputDataBytes[i]);
-            char[] charArray = byteCodes.toCharArray(); // TODO store bits in String[] or Bit[], not in `String`
+            char[] charArray = byteCodes.toCharArray(); // TODO store in Bit[]
             for (int j = 0; j < charArray.length; j++) {
                 char bit = charArray[j];
                 boolean isLastByte = false;
