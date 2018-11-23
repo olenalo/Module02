@@ -16,14 +16,11 @@ public class Main {
         String initialFileName = scanner.nextLine();
         String inputFileExtension = IOUtils.checkFilenameExtension(initialFileName);
         Processor processor;
-        if(inputFileExtension.equals(Configs.COMPRESSED_FILE_EXTENSION)){
+        if (inputFileExtension.equals(Configs.COMPRESSED_FILE_EXTENSION)) {
             String decompressionFileName = getDecompressionFileName();
-            processor = new Decompressor(initialFileName,
-                                         Configs.METADATA_TABLE_FILENAME,
-                                         decompressionFileName);
+            processor = new Decompressor(initialFileName, Configs.METADATA_TABLE_FILENAME, decompressionFileName);
         } else {
-            processor = new Compressor(initialFileName,
-                                       Configs.COMPRESSED_FILENAME);
+            processor = new Compressor(initialFileName, Configs.COMPRESSED_FILENAME);
         }
         processor.process().save();
     }
