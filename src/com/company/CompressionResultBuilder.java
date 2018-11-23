@@ -5,7 +5,7 @@ import java.util.*;
 public class CompressionResultBuilder {
     private Metadata metadata;
     private ArrayList<Byte> bytes = new ArrayList<>();
-    private ArrayList<String> bits = new ArrayList<>(); // debug only TODO consider adding to toString()
+    private ArrayList<String> bits = new ArrayList<>(); // debug only
     private long significantBitsNumber = 0;
     private StringBuilder bitsCash = new StringBuilder();
     private int bitsCashCounter = 0;
@@ -26,7 +26,7 @@ public class CompressionResultBuilder {
                 }
                 bits.add(bitsCash.toString());
                 bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
-                bitsCash = new StringBuilder(); // clean up
+                bitsCash = new StringBuilder(); // clean up TODO implement emptying method
             }
         } else {
             bits.add(bitsCash.toString());
@@ -45,18 +45,15 @@ public class CompressionResultBuilder {
     }
 
     public CompressionResult build() {
+        System.out.println(this);
         return new CompressionResult(this.bytes, this.metadata);
     }
 
     @Override
     public String toString() {
-        return "CompressionResultBuilder{" +
+        return "CompressionResultBuilder: \n" +
                 "metadata=" + metadata +
-                ", bytes=" + bytes +
-                ", bits=" + bits +
-                ", significantBitsNumber=" + significantBitsNumber +
-                ", bitsCash=" + bitsCash +
-                ", bitsCashCounter=" + bitsCashCounter +
-                '}';
+                "bytes=" + Arrays.toString(bytes.toArray()) + "\n" +
+                "bits=" +  Arrays.toString(bits.toArray());
     }
 }

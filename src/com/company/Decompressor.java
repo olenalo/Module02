@@ -51,7 +51,7 @@ public class Decompressor implements Processor {
     }
 
     private String[] fetchBits() {
-        int[] inputBytes = new int[this.inputBytes.length]; // TODO remove, debug only
+        int[] inputBytes = new int[this.inputBytes.length]; // debug only
         String[] bitsStrings = new String[this.inputBytes.length];
         int bitsToRemoveNumber = (int)(this.inputBytes.length * 8 - metadata.getSignificantBitsNumber());
         System.out.println("bitsToRemoveNumber: " + bitsToRemoveNumber);
@@ -69,8 +69,8 @@ public class Decompressor implements Processor {
             }
             bytesCounter++;
         }
-        System.out.println("input Bytes int: " + Arrays.toString(inputBytes));
-        System.out.println("input bitsStrings: " + Arrays.toString(bitsStrings));
+        System.out.println("input bytes: " + Arrays.toString(inputBytes));
+        System.out.println("input bits: " + Arrays.toString(bitsStrings));
         return bitsStrings;
     }
 
