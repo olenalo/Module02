@@ -1,9 +1,12 @@
 package huffman;
 
+import configs.Bit;
 import configs.Configs;
 import utils.IOUtils;
 
 import java.util.*;
+
+import static utils.Utils.convertToBitArray;
 
 public class Compressor implements Processor {
     private String filename;
@@ -18,17 +21,21 @@ public class Compressor implements Processor {
         System.out.println("inputDataBytes: " + Arrays.toString(this.inputDataBytes));
     }
 
-    private Map<Integer, String> buildCodes(String storedPath,
+    private Map<Integer, Bit[]> buildCodes(ArrayList<Bit> storedBits,
                                            Node node,
                                            int frequencyIndex,
-                                           Map<Integer, String> codes) {
+                                           Map<Integer, Bit[]> codes) {
         if (node.getLeft() == null && node.getRight() == null) {
             if (Integer.valueOf(node.getValue()).equals(frequencyIndex)) {
-                codes.put(frequencyIndex, storedPath);
+                codes.put(frequencyIndex, convertToBitArray(storedBits));
             }
         } else {
-            buildCodes(storedPath + "0", node.getLeft(), frequencyIndex, codes);
-            buildCodes(storedPath + "1", node.getRight(), frequencyIndex, codes);
+            ArrayList<Bit> storedBitsToLeft = (ArrayList<Bit>) storedBits.clone();
+            storedBitsToLeft.add(Bit.ZERO);
+            ArrayList<Bit> storedBitsToRight = (ArrayList<Bit>) storedBits.clone();
+            storedBitsToRight.add(Bit.ONE);
+            buildCodes(storedBitsToLeft, node.getLeft(), frequencyIndex, codes);
+            buildCodes(storedBitsToRight, node.getRight(), frequencyIndex, codes);
         }
         return codes;
     }
@@ -37,11 +44,11 @@ public class Compressor implements Processor {
      * Count occurrences of each byte in the initial input data.
      *
      * @return frequencies with their indexes corresponding
-     *     to the input data's bytes.
+     * to the input data's bytes.
      */
     private long[] defineFrequencies() {
         long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
-        for (byte b: this.inputDataBytes) {
+        for (byte b : this.inputDataBytes) {
             int i = b & 0xFF;
             frequencies[i]++;
         }
@@ -76,11 +83,11 @@ public class Compressor implements Processor {
         return nodes;
     }
 
-    private Map<Integer, String> buildHuffmanCodes(Node root, long[] frequencies) {
-        Map<Integer, String> codes = new HashMap<>();
+    private Map<Integer, Bit[]> buildHuffmanCodes(Node root, long[] frequencies) {
+        Map<Integer, Bit[]> codes = new HashMap<>();
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
-                codes.putAll(buildCodes("", root, i, codes));
+                codes.putAll(buildCodes(new ArrayList<>(), root, i, codes));
             }
         }
         return codes;
@@ -88,12 +95,11 @@ public class Compressor implements Processor {
 
     private void collectBits(Metadata metadata, CompressionResultBuilder builder) {
         for (int i = 0; i < this.inputDataBytes.length; i++) {
-            String byteCodes = metadata.getCode(this.inputDataBytes[i]);
-            char[] charArray = byteCodes.toCharArray(); // TODO store in Bit[]
-            for (int j = 0; j < charArray.length; j++) {
-                char bit = charArray[j];
+            Bit[] bits = metadata.getCode(this.inputDataBytes[i]);
+            for (int j = 0; j < bits.length; j++) {
+                Bit bit = bits[j];
                 boolean isLastByte = false;
-                if (i == this.inputDataBytes.length - 1 && j == byteCodes.length() - 1) {
+                if (i == this.inputDataBytes.length - 1 && j == bits.length - 1) {
                     isLastByte = true;
                 }
                 builder.addBit(bit, isLastByte);
@@ -105,7 +111,7 @@ public class Compressor implements Processor {
         CompressionResultBuilder builder = new CompressionResultBuilder();
         long[] frequencies = this.defineFrequencies();
         PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
-        Map<Integer, String> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
+        Map<Integer, Bit[]> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
         Metadata metadata = new Metadata(codes);
         this.collectBits(metadata, builder);
         this.compressionResult = builder
