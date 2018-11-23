@@ -3,15 +3,15 @@ package com.company;
 import java.util.*;
 
 public class Compressor {
-
     private String filename;
     private byte[] inputDataBytes; // TODO shouldn't it be of `int[]` type?
     private CompressionResult compressionResult;
 
-    public Compressor(byte[] bytes, String filename) {
+    public Compressor(String initialFileName, String filename) {
+        IOUtils.checkFilenameExtension(initialFileName);
         IOUtils.checkFilenameExtension(filename);
         this.filename = filename;
-        this.inputDataBytes = bytes;
+        this.inputDataBytes = IOUtils.readFile(initialFileName);
     }
 
     public Map<Integer, String> buildCodes(String storedPath,
@@ -78,7 +78,7 @@ public class Compressor {
     }
 
     public Compressor compress() {
-        CompressionResultBuilder builder = new CompressionResultBuilder().setFilename(this.filename);
+        CompressionResultBuilder builder = new CompressionResultBuilder();
         long[] frequencies = this.defineFrequencies();
         PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
         Map<Integer, String> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);

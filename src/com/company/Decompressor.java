@@ -8,15 +8,15 @@ public class Decompressor {
     private String filename;
     private byte[] inputBytes;
     private byte[] bytes;
-
     private Metadata metadata;
     private StringBuilder bitsCash = new StringBuilder();
     private ArrayList<Byte> resultBytes = new ArrayList<>();
 
-    public Decompressor(byte[] bytes, Metadata metadata, String filename) {
+    public Decompressor(String initialFileName, String metadataFileName, String filename) {
         IOUtils.checkFilenameExtension(filename);
-        this.inputBytes = bytes;
-        this.metadata = metadata;
+        IOUtils.checkFilenameExtension(metadataFileName);
+        this.inputBytes = IOUtils.readFile(initialFileName);
+        this.metadata = IOUtils.readMetadata(metadataFileName);
         this.filename = filename;
     }
 

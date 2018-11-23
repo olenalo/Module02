@@ -15,12 +15,12 @@ public class Main {
 
         if(inputFileExtension.equals(Configs.COMPRESSED_FILE_EXTENSION)){
             String decompressionFileName = getDecompressionFileName();
-            Decompressor decompressor = new Decompressor(IOUtils.readFile(initialFileName),
-                                                         IOUtils.readMetadata(Configs.METADATA_TABLE_FILENAME),
+            Decompressor decompressor = new Decompressor(initialFileName,
+                                                         Configs.METADATA_TABLE_FILENAME,
                                                          decompressionFileName);
             decompressor.decompress().save();
         } else {
-            Compressor compressor = new Compressor(IOUtils.readFile(initialFileName),
+            Compressor compressor = new Compressor(initialFileName,
                                                    Configs.COMPRESSED_FILENAME);
             compressor.compress().save();
         }

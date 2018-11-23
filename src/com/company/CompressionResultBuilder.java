@@ -3,11 +3,9 @@ package com.company;
 import java.util.*;
 
 public class CompressionResultBuilder {
-    private String filename;
     private Metadata metadata;
     private ArrayList<Byte> bytes = new ArrayList<>();
     private ArrayList<String> bits = new ArrayList<>(); // debug only TODO consider adding to toString()
-
     private long significantBitsNumber = 0;
     private StringBuilder bitsCash = new StringBuilder();
     private int bitsCashCounter = 0;
@@ -40,11 +38,6 @@ public class CompressionResultBuilder {
         return this;
     }
 
-    public CompressionResultBuilder setFilename(String filename) {
-        this.filename = filename;
-        return this;
-    }
-
     public CompressionResultBuilder setMetadata(Metadata metadata) {
         this.metadata = metadata;
         this.metadata.setSignificantBitsNumber(this.significantBitsNumber);
@@ -52,7 +45,7 @@ public class CompressionResultBuilder {
     }
 
     public CompressionResult build() {
-        return new CompressionResult(this.bytes, this.filename, this.metadata);
+        return new CompressionResult(this.bytes, this.metadata);
     }
 
 }
