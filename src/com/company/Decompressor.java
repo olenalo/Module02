@@ -17,12 +17,19 @@ public class Decompressor implements Processor {
         IOUtils.checkFilenameExtension(metadataFileName);
         this.inputBytes = IOUtils.readFile(initialFileName);
         this.metadata = IOUtils.readMetadata(metadataFileName);
+        System.out.println(this.metadata);
         this.filename = filename;
     }
 
-    // Get the first matched case
-    private static int getKeyByValue(String value, Map<Integer, String> map) {
-        for (Map.Entry <Integer, String> entry: map.entrySet()) {
+    /**
+     * Get the first matched key with a given value.
+     *
+     * @param value value to find in a map.
+     * @return first matched key associated to a given value
+     *     or -1 if none found.
+     */
+    private int getKeyByValue(String value) {
+        for (Map.Entry <Integer, String> entry: this.metadata.getDecodingTable().entrySet()) {
             if (value.equals(entry.getValue())) {
                 return entry.getKey();
             }
@@ -44,9 +51,10 @@ public class Decompressor implements Processor {
     private void addBit(char bit) {
         this.bitsCash.append(bit);
         if (this.metadata.getDecodingTable().containsValue(this.bitsCash.toString())) {
-            byte aByte = (byte)getKeyByValue(this.bitsCash.toString(), this.metadata.getDecodingTable()) ;
+            // FIXME for images
+            byte aByte = (byte)getKeyByValue(this.bitsCash.toString());
             if (aByte != -1) this.resultBytes.add(aByte);
-            this.bitsCash = new StringBuilder();
+            this.bitsCash.setLength(0);
         }
     }
 
@@ -60,7 +68,6 @@ public class Decompressor implements Processor {
             // Remove trailing bits if needed
             int b = this.inputBytes[i] & 0xFF;
             inputBytes[i] = b;  // debug only
-            // FIXME for images
             String bits = getBits((byte)b);
             if (bytesCounter == this.inputBytes.length - 1 && bitsToRemoveNumber > 0) {
                 bitsStrings[i] = bits.substring(0, bits.length() - bitsToRemoveNumber);

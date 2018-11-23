@@ -26,12 +26,12 @@ public class CompressionResultBuilder {
                 }
                 bits.add(bitsCash.toString());
                 bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
-                bitsCash = new StringBuilder(); // clean up TODO implement emptying method
+                bitsCash.setLength(0);
             }
         } else {
             bits.add(bitsCash.toString());
             bytes.add(Integer.valueOf(bitsCash.toString(), 2).byteValue());
-            bitsCash = new StringBuilder();
+            bitsCash.setLength(0);
             bitsCashCounter = 0;
             addBit(bit, isLastByte);
         }

@@ -12,6 +12,7 @@ public class Compressor implements Processor {
         IOUtils.checkFilenameExtension(filename);
         this.filename = filename;
         this.inputDataBytes = IOUtils.readFile(initialFileName);
+        System.out.println("inputDataBytes: " + Arrays.toString(this.inputDataBytes));
     }
 
     private Map<Integer, String> buildCodes(String storedPath,
