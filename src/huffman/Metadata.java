@@ -15,6 +15,16 @@ public class Metadata implements Serializable {
     private Map<Integer, Bit[]> decodingTable;
     private long significantBitsNumber;
 
+    public static String getStringBit(Bit bit) {
+        String b = null;
+        if (bit == Bit.ZERO) {
+            b = "0";
+        } else if (bit == Bit.ONE) {
+            b = "1";
+        }
+        return b;
+    }
+
     public Metadata(Map<Integer, Bit[]> decodingTable) {
         this.decodingTable = decodingTable;
     }

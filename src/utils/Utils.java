@@ -1,6 +1,7 @@
 package utils;
 
 import configs.Bit;
+import huffman.Metadata;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,6 @@ public class Utils {
         return array;
     }
 
-    // TODO consider moving to `Metadata`
     /**
      * Convert bits to string of 0 and 1.
      *
@@ -38,11 +38,7 @@ public class Utils {
     public static String convertBitsToString(ArrayList<Bit> bits) {
         StringBuilder bitsString = new StringBuilder();
         for (Bit bit : bits) {
-            if (bit == Bit.ZERO) {
-                bitsString.append("0");
-            } else if (bit == Bit.ONE) {
-                bitsString.append("1");
-            }
+            bitsString.append(Metadata.getStringBit(bit));
         }
         return bitsString.toString();
     }
