@@ -11,7 +11,6 @@ public class CompressionResult {
                              String filename,
                              Metadata metadata) {
         this.filename = filename;
-        // System.out.println(metadata);
         this.metadata = metadata;
         // Convert to the expected format
         byte[] compressionResult = new byte[bytes.size()];

@@ -58,7 +58,7 @@ public class DemoDecompression {
         System.out.println("Read decompressedBytes length (bits): " + decompressedBytes.length * 8);
 
         // Fetch bits to decode
-        int[] bytes = new int[decompressedBytes.length]; // debug only
+        int[] inputBytes = new int[decompressedBytes.length]; // debug only
         String[] bitsStrings = new String[decompressedBytes.length];
         int bitsToRemoveNumber = (int)(decompressedBytes.length * 8 - metadata.getSignificantBitsNumber());
         System.out.println("bitsToRemoveNumber: " + bitsToRemoveNumber);
@@ -66,7 +66,7 @@ public class DemoDecompression {
         for(int i = 0; i < decompressedBytes.length; i++) {
             // Remove trailing bits if needed
             int b = decompressedBytes[i] & 0xFF;
-            bytes[i] = b;  // debug only
+            inputBytes[i] = b;  // debug only
             // FIXME for images
             String bits = getBits((byte)b);
             if (bytesCounter == decompressedBytes.length - 1 && bitsToRemoveNumber > 0) {
@@ -76,8 +76,8 @@ public class DemoDecompression {
             }
             bytesCounter++;
         }
-        System.out.println("Bytes int: " + Arrays.toString(bytes));
-        System.out.println("bitsStrings: " + Arrays.toString(bitsStrings));
+        System.out.println("input Bytes int: " + Arrays.toString(inputBytes));
+        System.out.println("input bitsStrings: " + Arrays.toString(bitsStrings));
         // Decode the bits
         // FIXME for images
         for (String bits: bitsStrings) {
