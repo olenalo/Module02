@@ -69,7 +69,7 @@ public class Decompressor implements Processor {
         System.out.println("bitsToRemoveNumber: " + bitsToRemoveNumber);
         int bytesCounter = 0;
         for(int i = 0; i < this.inputBytes.length; i++) {
-            // Remove trailing bits if needed
+            // Ignore trailing bits if needed
             int b = this.inputBytes[i] & 0xFF;
             inputBytes[i] = b;  // debug only
             String bits = getBits((byte)b);
