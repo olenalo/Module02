@@ -1,9 +1,8 @@
 package huffman;
 
-import configs.Bit;
 import configs.Configs;
 import utils.IOUtils;
-import utils.Utils;
+import utils.ConversionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +78,7 @@ public class Decompressor implements Processor {
     public Decompressor process() {
         String[] bitsStrings = this.fetchBits();
         this.decodeBits(bitsStrings);
-        this.bytes = Utils.convertToByteArray(this.resultBytes);
+        this.bytes = ConversionUtils.convertToByteArray(this.resultBytes);
         System.out.println("Decompressed content to write: " + Arrays.toString(this.bytes));
         return this;
     }

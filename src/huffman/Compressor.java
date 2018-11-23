@@ -6,7 +6,7 @@ import utils.IOUtils;
 
 import java.util.*;
 
-import static utils.Utils.convertToBitArray;
+import static utils.ConversionUtils.convertToBitArray;
 
 public class Compressor implements Processor {
     private String filename;

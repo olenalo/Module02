@@ -5,7 +5,7 @@ import huffman.Metadata;
 
 import java.util.ArrayList;
 
-public class Utils {
+public class ConversionUtils {
 
     /**
      * Convert to an array of the primitive `byte` type.

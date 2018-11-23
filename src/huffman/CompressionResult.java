@@ -1,6 +1,6 @@
 package huffman;
 
-import utils.Utils;
+import utils.ConversionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ public class CompressionResult {
 
     public CompressionResult(ArrayList<Byte> bytes, Metadata metadata) {
         this.metadata = metadata;
-        this.bytes = Utils.convertToByteArray(bytes);
+        this.bytes = ConversionUtils.convertToByteArray(bytes);
         // System.out.println(this);
     }
 

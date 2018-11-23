@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static utils.Utils.convertBitsToString;
+import static utils.ConversionUtils.convertBitsToString;
 
 public class Metadata implements Serializable {
     private static final long serialVersionUID = 1L;

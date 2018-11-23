@@ -5,7 +5,7 @@ import configs.Configs;
 
 import java.util.*;
 
-import static utils.Utils.convertBitsToString;
+import static utils.ConversionUtils.convertBitsToString;
 
 public class CompressionResultBuilder {
     private Metadata metadata;
