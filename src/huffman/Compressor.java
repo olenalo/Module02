@@ -1,4 +1,7 @@
-package com.company;
+package huffman;
+
+import configs.Configs;
+import utils.IOUtils;
 
 import java.util.*;
 

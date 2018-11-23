@@ -1,4 +1,8 @@
-package com.company;
+package huffman;
+
+import configs.Configs;
+import utils.IOUtils;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

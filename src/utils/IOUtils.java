@@ -1,4 +1,6 @@
-package com.company;
+package utils;
+
+import huffman.Metadata;
 
 import java.io.*;
 import java.util.Scanner;

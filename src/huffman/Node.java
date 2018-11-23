@@ -1,4 +1,4 @@
-package com.company;
+package huffman;
 
 public class Node {
 

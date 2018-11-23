@@ -1,4 +1,4 @@
-package com.company;
+package huffman;
 
 public interface Processor {
     Processor process();

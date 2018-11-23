@@ -1,4 +1,4 @@
-package com.company;
+package huffman;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -1,8 +1,12 @@
-package com.company;
+import configs.Configs;
+import huffman.Compressor;
+import huffman.Decompressor;
+import huffman.Processor;
+import utils.IOUtils;
 
 import java.util.Scanner;
 
-import static com.company.IOUtils.getDecompressionFileName;
+import static utils.IOUtils.getDecompressionFileName;
 
 public class Main {
 

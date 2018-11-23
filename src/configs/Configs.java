@@ -1,4 +1,4 @@
-package com.company;
+package configs;
 
 public class Configs {
     public static final int BYTES_MAX_NUMBER = 256;
