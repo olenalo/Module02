@@ -7,15 +7,9 @@ public class CompressionResult {
     private byte[] bytes;
     private Metadata metadata;
 
-    public CompressionResult(ArrayList<Byte> bytes,
-                             Metadata metadata) {
+    public CompressionResult(ArrayList<Byte> bytes, Metadata metadata) {
         this.metadata = metadata;
-        // Convert to the expected format
-        byte[] compressionResult = new byte[bytes.size()];
-        for (int i = 0; i < compressionResult.length; i++) {
-            compressionResult[i] = bytes.get(i);
-        }
-        this.bytes = compressionResult;
+        this.bytes = Utils.convertToByteArray(bytes);
         // System.out.println(this);
     }
 

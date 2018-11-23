@@ -10,7 +10,7 @@ public class Decompressor implements Processor {
     private byte[] bytes;
     private Metadata metadata;
     private StringBuilder bitsCash = new StringBuilder();
-    private ArrayList<Byte> resultBytes = new ArrayList<>();
+    private ArrayList<Byte> resultBytes = new ArrayList<>(); // TODO consider storing in byte[] right away
 
     public Decompressor(String initialFileName, String metadataFileName, String filename) {
         IOUtils.checkFilenameExtension(filename);
@@ -89,20 +89,11 @@ public class Decompressor implements Processor {
         }
     }
 
-    // TODO consider getting rid of it
-    private void convertResult() {
-        byte[] decompressionResult = new byte[this.resultBytes.size()];
-        for (int i = 0; i < decompressionResult.length; i++) {
-            decompressionResult[i] = this.resultBytes.get(i);
-        }
-        System.out.println("Decompressed content to write: " + Arrays.toString(decompressionResult));
-        this.bytes = decompressionResult;
-    }
-
     public Decompressor process() {
         String[] bitsStrings = this.fetchBits();
         this.decodeBits(bitsStrings);
-        this.convertResult();
+        this.bytes = Utils.convertToByteArray(this.resultBytes);
+        System.out.println("Decompressed content to write: " + Arrays.toString(this.bytes));
         return this;
     }
 

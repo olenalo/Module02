@@ -4,7 +4,7 @@ import java.util.*;
 
 public class CompressionResultBuilder {
     private Metadata metadata;
-    private ArrayList<Byte> bytes = new ArrayList<>();
+    private ArrayList<Byte> bytes = new ArrayList<>();  // TODO consider storing in byte[] right away
     private ArrayList<String> bits = new ArrayList<>(); // debug only
     private long significantBitsNumber = 0;
     private StringBuilder bitsCash = new StringBuilder();
