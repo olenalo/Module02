@@ -5,6 +5,7 @@ import configs.Bit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import static utils.Utils.convertBitsToString;
@@ -22,6 +23,16 @@ public class Metadata implements Serializable {
         return decodingTable;
     }
 
+    public Map<Integer, String> getConvertedDecodingTable() {
+        Map<Integer, String> convertedTable = new HashMap<>();
+        for (Map.Entry<Integer, Bit[]> entry : this.decodingTable.entrySet()) {
+            convertedTable.put(
+                    entry.getKey(),
+                    convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))));
+        }
+        return convertedTable;
+    }
+
     public long getSignificantBitsNumber() {
         return significantBitsNumber;
     }
@@ -32,6 +43,22 @@ public class Metadata implements Serializable {
 
     public Bit[] getCode(byte aByte) {
         return decodingTable.get((int) aByte & 0xFF);
+    }
+
+    /**
+     * Get the first matched key with a given value.
+     *
+     * @param value value to find in a map.
+     * @return first matched key associated to a given value
+     * or -1 if none found.
+     */
+    public int getKeyByValue(String value) {
+        for (Map.Entry<Integer, Bit[]> entry : this.getDecodingTable().entrySet()) {
+            if (value.equals(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))) {
+                return entry.getKey();
+            }
+        }
+        return -1;
     }
 
     @Override

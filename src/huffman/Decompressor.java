@@ -7,9 +7,6 @@ import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-
-import static utils.Utils.convertBitsToString;
 
 public class Decompressor implements Processor {
     private String filename;
@@ -28,23 +25,6 @@ public class Decompressor implements Processor {
         this.filename = filename;
     }
 
-    // TODO move to Metadata
-    /**
-     * Get the first matched key with a given value.
-     *
-     * @param value value to find in a map.
-     * @return first matched key associated to a given value
-     * or -1 if none found.
-     */
-    private int getKeyByValue(String value) {
-        for (Map.Entry<Integer, Bit[]> entry : this.metadata.getDecodingTable().entrySet()) {
-            if (value.equals(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))) {
-                return entry.getKey();
-            }
-        }
-        return -1;
-    }
-
     private static String getBits(byte aByte) {
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < Configs.EIGHT_BITS; j++) {
@@ -53,17 +33,6 @@ public class Decompressor implements Processor {
             builder.append(expect1);
         }
         return (builder.reverse().toString());
-    }
-
-    // TODO pass `Bit` type
-    private void addBit(char bit) {
-        this.bitsCash.append(bit);
-        if (this.metadata.getDecodingTable().containsValue(this.bitsCash.toString())) {
-            // FIXME for images
-            byte aByte = (byte) getKeyByValue(this.bitsCash.toString());
-            if (aByte != -1) this.resultBytes.add(aByte);
-            this.bitsCash.setLength(0);
-        }
     }
 
     private String[] fetchBits() {
@@ -87,6 +56,16 @@ public class Decompressor implements Processor {
         System.out.println("input bytes: " + Arrays.toString(inputBytes));
         System.out.println("input bits: " + Arrays.toString(bitsStrings));
         return bitsStrings;
+    }
+
+    private void addBit(char bit) {
+        this.bitsCash.append(bit);
+        if (this.metadata.getConvertedDecodingTable().containsValue(this.bitsCash.toString())) {
+            // FIXME for images
+            byte aByte = (byte) this.metadata.getKeyByValue(this.bitsCash.toString());
+            if (aByte != -1) this.resultBytes.add(aByte);
+            this.bitsCash.setLength(0);
+        }
     }
 
     private void decodeBits(String[] bitsStrings) {
