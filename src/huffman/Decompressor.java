@@ -59,10 +59,9 @@ public class Decompressor implements Processor {
 
     private void addBit(char bit) {
         this.bitsCash.append(bit);
-        if (this.metadata.getConvertedDecodingTable().containsValue(this.bitsCash.toString())) {
-            // FIXME for images
-            byte aByte = (byte) this.metadata.getKeyByValue(this.bitsCash.toString());
-            if (aByte != -1) this.resultBytes.add(aByte);
+        String bitsString = this.bitsCash.toString();
+        if (this.metadata.getConvertedDecodingTable().containsValue(bitsString)) {
+            this.resultBytes.add((byte) this.metadata.getKeyByValue(bitsString));
             this.bitsCash.setLength(0);
         }
     }
