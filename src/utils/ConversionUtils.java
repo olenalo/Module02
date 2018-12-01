@@ -3,7 +3,7 @@ package utils;
 import configs.Bit;
 import huffman.Metadata;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ConversionUtils {
 
@@ -13,7 +13,7 @@ public class ConversionUtils {
      * @param list list to convert.
      * @return array of primitive type.
      */
-    public static byte[] convertToByteArray(ArrayList<Byte> list) {
+    public static byte[] convertToByteArray(List<Byte> list) {
         byte[] array = new byte[list.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = list.get(i);
@@ -21,7 +21,7 @@ public class ConversionUtils {
         return array;
     }
 
-    public static Bit[] convertToBitArray(ArrayList<Bit> list) {
+    public static Bit[] convertToBitArray(List<Bit> list) {
         Bit[] array = new Bit[list.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = list.get(i);
@@ -35,7 +35,7 @@ public class ConversionUtils {
      * @param bits list of bits.
      * @return string of bits represented as 0 and 1.
      */
-    public static String convertBitsToString(ArrayList<Bit> bits) {
+    public static String convertBitsToString(List<Bit> bits) {
         StringBuilder bitsString = new StringBuilder();
         for (Bit bit : bits) {
             bitsString.append(Metadata.getStringBit(bit));

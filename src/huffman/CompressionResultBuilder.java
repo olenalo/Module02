@@ -10,10 +10,10 @@ import static utils.ConversionUtils.convertBitsToString;
 
 public class CompressionResultBuilder {
     private Metadata metadata;
-    private ArrayList<Byte> bytes = new ArrayList<>();
-    private ArrayList<Bit> bitsBuffer = new ArrayList<>();
+    private List<Byte> bytes = new ArrayList<>();
+    private List<Bit> bitsBuffer = new ArrayList<>();
     private long significantBitsNumber = 0;
-    // private ArrayList<String> bits = new ArrayList<>(); // debug only
+    // private List<String> bits = new ArrayList<>(); // debug only
 
     private byte formByte() {
         // bits.add(convertBitsToString(bitsBuffer));
@@ -54,7 +54,8 @@ public class CompressionResultBuilder {
         }
         this.addTrailingBits();
         this.bitsBuffer.clear();
-        this.metadata.setSignificantBitsNumber(this.significantBitsNumber); // TODO: consider refactoring
+        // TODO: consider refactoring (metadata update; object state change)
+        this.metadata.setSignificantBitsNumber(this.significantBitsNumber);
         return this;
     }
 

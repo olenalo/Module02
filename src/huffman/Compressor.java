@@ -26,7 +26,7 @@ public class Compressor implements Processor {
         System.out.println("inputDataBytes: " + Arrays.toString(this.inputDataBytes));
     }
 
-    private Map<Integer, Bit[]> buildCodes(ArrayList<Bit> storedBits,
+    private Map<Integer, Bit[]> buildCodes(List<Bit> storedBits,
                                            Node node,
                                            int frequencyIndex,
                                            Map<Integer, Bit[]> codes) {
@@ -35,9 +35,9 @@ public class Compressor implements Processor {
                 codes.put(frequencyIndex, convertToBitArray(storedBits));
             }
         } else {
-            ArrayList<Bit> storedBitsToLeft = (ArrayList<Bit>) storedBits.clone();
+            List<Bit> storedBitsToLeft = new ArrayList<>(storedBits);
             storedBitsToLeft.add(ZERO);
-            ArrayList<Bit> storedBitsToRight = (ArrayList<Bit>) storedBits.clone();
+            List<Bit> storedBitsToRight = new ArrayList<>(storedBits);
             storedBitsToRight.add(ONE);
             buildCodes(storedBitsToLeft, node.getLeft(), frequencyIndex, codes);
             buildCodes(storedBitsToRight, node.getRight(), frequencyIndex, codes);
@@ -60,8 +60,8 @@ public class Compressor implements Processor {
         return frequencies;
     }
 
-    private PriorityQueue<Node> createNodes(long[] frequencies) {
-        PriorityQueue<Node> nodes = new PriorityQueue<>(Comparator.comparingLong(Node::getWeight));
+    private Queue<Node> createNodes(long[] frequencies) {
+        Queue<Node> nodes = new PriorityQueue<>(Comparator.comparingLong(Node::getWeight));
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
                 Node node = new Node();
@@ -73,8 +73,8 @@ public class Compressor implements Processor {
         return nodes;
     }
 
-    private PriorityQueue<Node> buildHuffmanTree(long[] frequencies) {
-        PriorityQueue<Node> nodes = createNodes(frequencies);
+    private Queue<Node> buildHuffmanTree(long[] frequencies) {
+        Queue<Node> nodes = createNodes(frequencies);
         while (nodes.size() > 1) {
             Node node1 = nodes.poll();
             Node node2 = nodes.poll();
@@ -100,7 +100,7 @@ public class Compressor implements Processor {
 
     public Compressor process() {
         long[] frequencies = this.defineFrequencies();
-        PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
+        Queue<Node> nodes = this.buildHuffmanTree(frequencies);
         Map<Integer, Bit[]> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
         CompressionResultBuilder builder = new CompressionResultBuilder();
         this.compressionResult = builder.setMetadata(new Metadata(codes))
