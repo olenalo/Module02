@@ -43,12 +43,23 @@ public class CompressionResultBuilder {
             }
         }
         this.bytes.add(this.formByte());
+    }
+
+    public CompressionResultBuilder collectBits(byte[] inputDataBytes) {
+        for (byte inputDataByte : inputDataBytes) {
+            Bit[] bits = this.metadata.getCode(inputDataByte);
+            for (Bit bit : bits) {
+                this.addBit(bit);
+            }
+        }
+        this.addTrailingBits();
         this.bitsBuffer.clear();
+        this.metadata.setSignificantBitsNumber(this.significantBitsNumber); // TODO: consider refactoring
+        return this;
     }
 
     public CompressionResultBuilder setMetadata(Metadata metadata) {
         this.metadata = metadata;
-        this.metadata.setSignificantBitsNumber(this.significantBitsNumber);
         return this;
     }
 

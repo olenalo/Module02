@@ -98,25 +98,14 @@ public class Compressor implements Processor {
         return codes;
     }
 
-    private void collectBits(Metadata metadata, CompressionResultBuilder builder) {
-        for (int i = 0; i < this.inputDataBytes.length; i++) {
-            Bit[] bits = metadata.getCode(this.inputDataBytes[i]);
-            for (int j = 0; j < bits.length; j++) {
-                Bit bit = bits[j];
-                builder.addBit(bit);
-            }
-        }
-        builder.addTrailingBits();
-    }
-
     public Compressor process() {
-        CompressionResultBuilder builder = new CompressionResultBuilder();
         long[] frequencies = this.defineFrequencies();
         PriorityQueue<Node> nodes = this.buildHuffmanTree(frequencies);
         Map<Integer, Bit[]> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
-        Metadata metadata = new Metadata(codes);
-        this.collectBits(metadata, builder);
-        this.compressionResult = builder.setMetadata(metadata).build();
+        CompressionResultBuilder builder = new CompressionResultBuilder();
+        this.compressionResult = builder.setMetadata(new Metadata(codes))
+                                        .collectBits(this.inputDataBytes)
+                                        .build();
         return this;
     }
 
