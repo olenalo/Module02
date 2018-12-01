@@ -3,10 +3,7 @@ package huffman;
 import configs.Bit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static configs.Bit.ZERO;
 import static utils.ConversionUtils.convertBitsToString;
@@ -30,7 +27,7 @@ public class Metadata implements Serializable {
 
     public Map<Integer, String> getConvertedDecodingTable() {
         Map<Integer, String> convertedTable = new HashMap<>();
-        for (Map.Entry<Integer, Bit[]> entry : this.decodingTable.entrySet()) {
+        for (Map.Entry<Integer, Bit[]> entry : decodingTable.entrySet()) {
             convertedTable.put(
                     entry.getKey(),
                     convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))));
@@ -58,12 +55,17 @@ public class Metadata implements Serializable {
      * or -1 if none found.
      */
     public int getKeyByValue(String value) {
+        int key = -1;
         for (Map.Entry<Integer, Bit[]> entry : getDecodingTable().entrySet()) {
             if (value.equals(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))) {
-                return entry.getKey();
+                key = entry.getKey();
+                break;
             }
         }
-        return -1;
+        if (key == -1) {
+            throw new NoSuchElementException("No such bits string found in metadata.");
+        }
+        return key;
     }
 
     @Override

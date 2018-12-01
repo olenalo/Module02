@@ -2,6 +2,7 @@ package huffman;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static configs.Configs.EIGHT_BITS;
 import static utils.ConversionUtils.convertToByteArray;
@@ -61,7 +62,11 @@ public class Decompressor implements Processor {
         bitsBuffer.append(bit);
         String bitsString = bitsBuffer.toString();
         if (metadata.getConvertedDecodingTable().containsValue(bitsString)) {
-            resultBytes.add((byte) metadata.getKeyByValue(bitsString));
+            try {
+                resultBytes.add((byte) metadata.getKeyByValue(bitsString));
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
+            }
             bitsBuffer.setLength(0);
         }
     }
