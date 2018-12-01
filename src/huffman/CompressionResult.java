@@ -25,6 +25,7 @@ public class CompressionResult {
 
     @Override
     public String toString() {
+        // TODO discuss images compression
         return "CompressionResult: \n" +
                 "metadata=" + metadata +
                 "bytes=" + Arrays.toString(bytes);
