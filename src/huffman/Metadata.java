@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static configs.Bit.ONE;
 import static configs.Bit.ZERO;
 import static utils.ConversionUtils.convertBitsToString;
 
@@ -18,13 +17,7 @@ public class Metadata implements Serializable {
     private long significantBitsNumber;
 
     public static String getStringBit(Bit bit) {
-        String b = null;
-        if (bit == ZERO) {
-            b = "0";
-        } else if (bit == ONE) {
-            b = "1";
-        }
-        return b;
+        return (bit == ZERO) ? "0" : "1";
     }
 
     public Metadata(Map<Integer, Bit[]> decodingTable) {
@@ -80,11 +73,10 @@ public class Metadata implements Serializable {
                         "\nsignificantBitsNumber - " + significantBitsNumber +
                         "; \ndecodingTable - ");
         for (Map.Entry<Integer, Bit[]> entry : this.decodingTable.entrySet()) {
-            stringBuilder
-                    .append(entry.getKey())
-                    .append(": ")
-                    .append(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))
-                    .append("; ");
+            stringBuilder.append(entry.getKey())
+                         .append(": ")
+                         .append(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))
+                         .append("; ");
         }
         stringBuilder.append("\n");
         return stringBuilder.toString();

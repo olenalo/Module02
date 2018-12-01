@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class ConversionUtils {
 
     /**
-     * Convert to an array of the primitive `byte` type.
+     * Convert to an array of the primitive {@code byte} type.
      *
      * @param list list to convert.
      * @return array of primitive type.

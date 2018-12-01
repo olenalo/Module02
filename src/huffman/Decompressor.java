@@ -31,7 +31,7 @@ public class Decompressor implements Processor {
             int expect1 = tmp & 0x01;
             builder.append(expect1);
         }
-        return (builder.reverse().toString());
+        return builder.reverse().toString();
     }
 
     private String[] fetchBits() {
