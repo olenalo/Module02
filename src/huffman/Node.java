@@ -38,4 +38,11 @@ public class Node {
     public void setRight(Node right) {
         this.right = right;
     }
+
+    public boolean isLeaf() {
+        boolean isLeaf = false;
+        if (this.right == null && this.left == null)
+            isLeaf = true;
+        return isLeaf;
+    }
 }

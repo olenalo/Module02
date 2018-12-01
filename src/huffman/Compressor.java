@@ -30,7 +30,7 @@ public class Compressor implements Processor {
                                            Node node,
                                            int frequencyIndex,
                                            Map<Integer, Bit[]> codes) {
-        if (node.getLeft() == null && node.getRight() == null) {
+        if (node.isLeaf()) {
             if (Integer.valueOf(node.getValue()).equals(frequencyIndex)) {
                 codes.put(frequencyIndex, convertToBitArray(storedBits));
             }
