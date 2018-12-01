@@ -53,7 +53,7 @@ public class Compressor implements Processor {
      */
     private long[] defineFrequencies() {
         long[] frequencies = new long[BYTES_MAX_NUMBER];
-        for (byte b : this.inputDataBytes) {
+        for (byte b : inputDataBytes) {
             int i = b & 0xFF;
             frequencies[i]++;
         }
@@ -103,16 +103,16 @@ public class Compressor implements Processor {
         Queue<Node> nodes = this.buildHuffmanTree(frequencies);
         Map<Integer, Bit[]> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
         CompressionResultBuilder builder = new CompressionResultBuilder();
-        this.compressionResult = builder.setMetadata(new Metadata(codes))
-                                        .collectBits(this.inputDataBytes)
-                                        .build();
+        compressionResult = builder.setMetadata(new Metadata(codes))
+                                   .collectBits(inputDataBytes)
+                                   .build();
         return this;
     }
 
     public void save() {
-        writeFile(this.compressionResult.getBytes(),
-                this.compressionResult.getMetadata(),
-                this.filename,
+        writeFile(compressionResult.getBytes(),
+                compressionResult.getMetadata(),
+                filename,
                 METADATA_TABLE_FILENAME
         );
     }

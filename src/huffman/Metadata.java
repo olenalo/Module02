@@ -58,7 +58,7 @@ public class Metadata implements Serializable {
      * or -1 if none found.
      */
     public int getKeyByValue(String value) {
-        for (Map.Entry<Integer, Bit[]> entry : this.getDecodingTable().entrySet()) {
+        for (Map.Entry<Integer, Bit[]> entry : getDecodingTable().entrySet()) {
             if (value.equals(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))) {
                 return entry.getKey();
             }
@@ -72,7 +72,7 @@ public class Metadata implements Serializable {
                 "Metadata: " +
                         "\nsignificantBitsNumber - " + significantBitsNumber +
                         "; \ndecodingTable - ");
-        for (Map.Entry<Integer, Bit[]> entry : this.decodingTable.entrySet()) {
+        for (Map.Entry<Integer, Bit[]> entry : decodingTable.entrySet()) {
             stringBuilder.append(entry.getKey())
                          .append(": ")
                          .append(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))

@@ -58,11 +58,11 @@ public class Decompressor implements Processor {
     }
 
     private void addBit(char bit) {
-        this.bitsBuffer.append(bit);
-        String bitsString = this.bitsBuffer.toString();
-        if (this.metadata.getConvertedDecodingTable().containsValue(bitsString)) {
-            this.resultBytes.add((byte) this.metadata.getKeyByValue(bitsString));
-            this.bitsBuffer.setLength(0);
+        bitsBuffer.append(bit);
+        String bitsString = bitsBuffer.toString();
+        if (metadata.getConvertedDecodingTable().containsValue(bitsString)) {
+            resultBytes.add((byte) metadata.getKeyByValue(bitsString));
+            bitsBuffer.setLength(0);
         }
     }
 

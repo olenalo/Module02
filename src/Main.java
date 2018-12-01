@@ -18,7 +18,7 @@ public class Main {
         String initialFileName = scanner.nextLine();
         String inputFileExtension = checkFilenameExtension(initialFileName);
         Processor processor;
-        if (inputFileExtension.equals(COMPRESSED_FILE_EXTENSION)) {
+        if (COMPRESSED_FILE_EXTENSION.equals(inputFileExtension)) {
             String decompressionFileName = getDecompressionFileName();
             processor = new Decompressor(initialFileName, METADATA_TABLE_FILENAME, decompressionFileName);
         } else {

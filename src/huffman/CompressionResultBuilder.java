@@ -17,16 +17,16 @@ public class CompressionResultBuilder {
 
     private byte formByte() {
         // bits.add(convertBitsToString(bitsBuffer));
-        return Integer.valueOf(convertBitsToString(this.bitsBuffer), 2).byteValue();
+        return Integer.valueOf(convertBitsToString(bitsBuffer), 2).byteValue();
     }
 
     public CompressionResultBuilder addBit(Bit bit) {
-        if (this.bitsBuffer.size() < EIGHT_BITS) {
-            this.bitsBuffer.add(bit);
-            this.significantBitsNumber++;
+        if (bitsBuffer.size() < EIGHT_BITS) {
+            bitsBuffer.add(bit);
+            significantBitsNumber++;
         } else {
-            this.bytes.add(this.formByte());
-            this.bitsBuffer.clear();
+            bytes.add(this.formByte());
+            bitsBuffer.clear();
             addBit(bit);
         }
         return this;
@@ -36,26 +36,26 @@ public class CompressionResultBuilder {
      * Add trailing bits if needed.
      */
     public void addTrailingBits() {
-        int bitsToAddNumber = EIGHT_BITS - convertBitsToString(this.bitsBuffer).length();
+        int bitsToAddNumber = EIGHT_BITS - convertBitsToString(bitsBuffer).length();
         if (bitsToAddNumber > 0) {
             for (int i = 0; i < bitsToAddNumber; i++) {
-                this.bitsBuffer.add(ZERO);
+                bitsBuffer.add(ZERO);
             }
         }
-        this.bytes.add(this.formByte());
+        bytes.add(this.formByte());
     }
 
     public CompressionResultBuilder collectBits(byte[] inputDataBytes) {
         for (byte inputDataByte : inputDataBytes) {
-            Bit[] bits = this.metadata.getCode(inputDataByte);
+            Bit[] bits = metadata.getCode(inputDataByte);
             for (Bit bit : bits) {
                 this.addBit(bit);
             }
         }
         this.addTrailingBits();
-        this.bitsBuffer.clear();
+        bitsBuffer.clear();
         // TODO: consider refactoring (metadata update; object state change)
-        this.metadata.setSignificantBitsNumber(this.significantBitsNumber);
+        metadata.setSignificantBitsNumber(significantBitsNumber);
         return this;
     }
 
@@ -66,14 +66,14 @@ public class CompressionResultBuilder {
 
     public CompressionResult build() {
         System.out.println(this);
-        return new CompressionResult(this.bytes, this.metadata);
+        return new CompressionResult(bytes, metadata);
     }
 
     @Override
     public String toString() {
         return "CompressionResultBuilder: \n" +
-                "metadata=" + this.metadata +
-                "bytes=" + Arrays.toString(this.bytes.toArray()); // + "\n" +
+                "metadata=" + metadata +
+                "bytes=" + Arrays.toString(bytes.toArray()); // + "\n" +
         // "bits=" + Arrays.toString(bits.toArray());
     }
 }
