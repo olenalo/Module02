@@ -1,32 +1,32 @@
 package huffman;
 
-import configs.Configs;
-import utils.IOUtils;
-import utils.ConversionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static configs.Configs.EIGHT_BITS;
+import static utils.ConversionUtils.convertToByteArray;
+import static utils.IOUtils.*;
 
 public class Decompressor implements Processor {
     private String filename;
     private byte[] inputBytes;
     private byte[] bytes;
     private Metadata metadata;
-    private StringBuilder bitsCash = new StringBuilder();
+    private StringBuilder bitsBuffer = new StringBuilder();
     private ArrayList<Byte> resultBytes = new ArrayList<>();
 
     public Decompressor(String initialFileName, String metadataFileName, String filename) {
-        IOUtils.checkFilenameExtension(filename);
-        IOUtils.checkFilenameExtension(metadataFileName);
-        this.inputBytes = IOUtils.readFile(initialFileName);
-        this.metadata = IOUtils.readMetadata(metadataFileName);
+        checkFilenameExtension(filename);
+        checkFilenameExtension(metadataFileName);
+        this.inputBytes = readFile(initialFileName);
+        this.metadata = readMetadata(metadataFileName);
         System.out.println(this.metadata);
         this.filename = filename;
     }
 
     private static String getBits(byte aByte) {
         StringBuilder builder = new StringBuilder();
-        for (int j = 0; j < Configs.EIGHT_BITS; j++) {
+        for (int j = 0; j < EIGHT_BITS; j++) {
             byte tmp = (byte) (aByte >> j);
             int expect1 = tmp & 0x01;
             builder.append(expect1);
@@ -37,7 +37,7 @@ public class Decompressor implements Processor {
     private String[] fetchBits() {
         int[] inputBytes = new int[this.inputBytes.length]; // debug only
         String[] bitsStrings = new String[this.inputBytes.length];
-        int bitsToRemoveNumber = (int) (this.inputBytes.length * 8 - metadata.getSignificantBitsNumber());
+        int bitsToRemoveNumber = (int) (this.inputBytes.length * 8 - this.metadata.getSignificantBitsNumber());
         System.out.println("bitsToRemoveNumber: " + bitsToRemoveNumber);
         int bytesCounter = 0;
         for (int i = 0; i < this.inputBytes.length; i++) {
@@ -58,11 +58,11 @@ public class Decompressor implements Processor {
     }
 
     private void addBit(char bit) {
-        this.bitsCash.append(bit);
-        String bitsString = this.bitsCash.toString();
+        this.bitsBuffer.append(bit);
+        String bitsString = this.bitsBuffer.toString();
         if (this.metadata.getConvertedDecodingTable().containsValue(bitsString)) {
             this.resultBytes.add((byte) this.metadata.getKeyByValue(bitsString));
-            this.bitsCash.setLength(0);
+            this.bitsBuffer.setLength(0);
         }
     }
 
@@ -77,13 +77,13 @@ public class Decompressor implements Processor {
     public Decompressor process() {
         String[] bitsStrings = this.fetchBits();
         this.decodeBits(bitsStrings);
-        this.bytes = ConversionUtils.convertToByteArray(this.resultBytes);
+        this.bytes = convertToByteArray(this.resultBytes);
         System.out.println("Decompressed content to write: " + Arrays.toString(this.bytes));
         return this;
     }
 
     public void save() {
-        IOUtils.writeDecompressedFile(
+        writeDecompressedFile(
                 this.bytes,
                 this.filename);
     }

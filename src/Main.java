@@ -1,11 +1,13 @@
-import configs.Configs;
 import huffman.Compressor;
 import huffman.Decompressor;
 import huffman.Processor;
-import utils.IOUtils;
 
 import java.util.Scanner;
 
+import static configs.Configs.COMPRESSED_FILENAME;
+import static configs.Configs.COMPRESSED_FILE_EXTENSION;
+import static configs.Configs.METADATA_TABLE_FILENAME;
+import static utils.IOUtils.checkFilenameExtension;
 import static utils.IOUtils.getDecompressionFileName;
 
 public class Main {
@@ -14,13 +16,13 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the initial file name: ");
         String initialFileName = scanner.nextLine();
-        String inputFileExtension = IOUtils.checkFilenameExtension(initialFileName);
+        String inputFileExtension = checkFilenameExtension(initialFileName);
         Processor processor;
-        if (inputFileExtension.equals(Configs.COMPRESSED_FILE_EXTENSION)) {
+        if (inputFileExtension.equals(COMPRESSED_FILE_EXTENSION)) {
             String decompressionFileName = getDecompressionFileName();
-            processor = new Decompressor(initialFileName, Configs.METADATA_TABLE_FILENAME, decompressionFileName);
+            processor = new Decompressor(initialFileName, METADATA_TABLE_FILENAME, decompressionFileName);
         } else {
-            processor = new Compressor(initialFileName, Configs.COMPRESSED_FILENAME);
+            processor = new Compressor(initialFileName, COMPRESSED_FILENAME);
         }
         processor.process().save();
     }

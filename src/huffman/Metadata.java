@@ -8,18 +8,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static configs.Bit.ONE;
+import static configs.Bit.ZERO;
 import static utils.ConversionUtils.convertBitsToString;
 
 public class Metadata implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4765242953381747387L;
     private Map<Integer, Bit[]> decodingTable;
     private long significantBitsNumber;
 
     public static String getStringBit(Bit bit) {
         String b = null;
-        if (bit == Bit.ZERO) {
+        if (bit == ZERO) {
             b = "0";
-        } else if (bit == Bit.ONE) {
+        } else if (bit == ONE) {
             b = "1";
         }
         return b;

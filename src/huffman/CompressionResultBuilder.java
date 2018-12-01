@@ -1,35 +1,36 @@
 package huffman;
 
 import configs.Bit;
-import configs.Configs;
 
 import java.util.*;
 
+import static configs.Bit.ZERO;
+import static configs.Configs.EIGHT_BITS;
 import static utils.ConversionUtils.convertBitsToString;
 
 public class CompressionResultBuilder {
     private Metadata metadata;
     private ArrayList<Byte> bytes = new ArrayList<>();
-    private ArrayList<Bit> bitsCash = new ArrayList<>();
+    private ArrayList<Bit> bitsBuffer = new ArrayList<>();
     private long significantBitsNumber = 0;
-    private int bitsCashCounter = 0;
+    private int bitsBufferCounter = 0;
     private ArrayList<String> bits = new ArrayList<>(); // debug only
 
     private void formByte() {
-        String bitsString = convertBitsToString(bitsCash);
+        String bitsString = convertBitsToString(bitsBuffer);
         bits.add(bitsString);
         bytes.add(Integer.valueOf(bitsString, 2).byteValue());
-        bitsCash.clear();
+        bitsBuffer.clear();
     }
 
     public CompressionResultBuilder addBit(Bit bit) {
-        if (bitsCashCounter < Configs.EIGHT_BITS) {
-            bitsCash.add(bit);
-            bitsCashCounter++;
+        if (bitsBufferCounter < EIGHT_BITS) {
+            bitsBuffer.add(bit);
+            bitsBufferCounter++;
             significantBitsNumber++;
         } else {
             this.formByte();
-            bitsCashCounter = 0;
+            bitsBufferCounter = 0;
             addBit(bit);
         }
         return this;
@@ -39,10 +40,10 @@ public class CompressionResultBuilder {
      * Add trailing bits if needed.
      */
     public void addTrailingBits() {
-        int bitsToAddNumber = Configs.EIGHT_BITS - convertBitsToString(bitsCash).length();
+        int bitsToAddNumber = EIGHT_BITS - convertBitsToString(bitsBuffer).length();
         if (bitsToAddNumber > 0) {
             for (int i = 0; i < bitsToAddNumber; i++) {
-                bitsCash.add(Bit.ZERO);
+                bitsBuffer.add(ZERO);
             }
         }
         this.formByte();

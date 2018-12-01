@@ -1,12 +1,17 @@
 package huffman;
 
 import configs.Bit;
-import configs.Configs;
-import utils.IOUtils;
 
 import java.util.*;
 
+import static configs.Bit.ONE;
+import static configs.Bit.ZERO;
+import static configs.Configs.BYTES_MAX_NUMBER;
+import static configs.Configs.METADATA_TABLE_FILENAME;
 import static utils.ConversionUtils.convertToBitArray;
+import static utils.IOUtils.checkFilenameExtension;
+import static utils.IOUtils.readFile;
+import static utils.IOUtils.writeFile;
 
 public class Compressor implements Processor {
     private String filename;
@@ -14,10 +19,10 @@ public class Compressor implements Processor {
     private CompressionResult compressionResult;
 
     public Compressor(String initialFileName, String filename) {
-        IOUtils.checkFilenameExtension(initialFileName);
-        IOUtils.checkFilenameExtension(filename);
+        checkFilenameExtension(initialFileName);
+        checkFilenameExtension(filename);
         this.filename = filename;
-        this.inputDataBytes = IOUtils.readFile(initialFileName);
+        this.inputDataBytes = readFile(initialFileName);
         System.out.println("inputDataBytes: " + Arrays.toString(this.inputDataBytes));
     }
 
@@ -31,9 +36,9 @@ public class Compressor implements Processor {
             }
         } else {
             ArrayList<Bit> storedBitsToLeft = (ArrayList<Bit>) storedBits.clone();
-            storedBitsToLeft.add(Bit.ZERO);
+            storedBitsToLeft.add(ZERO);
             ArrayList<Bit> storedBitsToRight = (ArrayList<Bit>) storedBits.clone();
-            storedBitsToRight.add(Bit.ONE);
+            storedBitsToRight.add(ONE);
             buildCodes(storedBitsToLeft, node.getLeft(), frequencyIndex, codes);
             buildCodes(storedBitsToRight, node.getRight(), frequencyIndex, codes);
         }
@@ -47,7 +52,7 @@ public class Compressor implements Processor {
      * to the input data's bytes.
      */
     private long[] defineFrequencies() {
-        long[] frequencies = new long[Configs.BYTES_MAX_NUMBER];
+        long[] frequencies = new long[BYTES_MAX_NUMBER];
         for (byte b : this.inputDataBytes) {
             int i = b & 0xFF;
             frequencies[i]++;
@@ -111,17 +116,15 @@ public class Compressor implements Processor {
         Map<Integer, Bit[]> codes = this.buildHuffmanCodes(nodes.peek(), frequencies);
         Metadata metadata = new Metadata(codes);
         this.collectBits(metadata, builder);
-        this.compressionResult = builder
-                .setMetadata(metadata)
-                .build();
+        this.compressionResult = builder.setMetadata(metadata).build();
         return this;
     }
 
     public void save() {
-        IOUtils.writeFile(this.compressionResult.getBytes(),
+        writeFile(this.compressionResult.getBytes(),
                 this.compressionResult.getMetadata(),
                 this.filename,
-                Configs.METADATA_TABLE_FILENAME
+                METADATA_TABLE_FILENAME
         );
     }
 
