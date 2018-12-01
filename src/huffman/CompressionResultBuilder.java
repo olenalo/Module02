@@ -13,24 +13,20 @@ public class CompressionResultBuilder {
     private ArrayList<Byte> bytes = new ArrayList<>();
     private ArrayList<Bit> bitsBuffer = new ArrayList<>();
     private long significantBitsNumber = 0;
-    private int bitsBufferCounter = 0;
-    private ArrayList<String> bits = new ArrayList<>(); // debug only
+    // private ArrayList<String> bits = new ArrayList<>(); // debug only
 
-    private void formByte() {
-        String bitsString = convertBitsToString(bitsBuffer);
-        bits.add(bitsString);
-        bytes.add(Integer.valueOf(bitsString, 2).byteValue());
-        bitsBuffer.clear();
+    private byte formByte() {
+        // bits.add(convertBitsToString(bitsBuffer));
+        return Integer.valueOf(convertBitsToString(this.bitsBuffer), 2).byteValue();
     }
 
     public CompressionResultBuilder addBit(Bit bit) {
-        if (bitsBufferCounter < EIGHT_BITS) {
-            bitsBuffer.add(bit);
-            bitsBufferCounter++;
-            significantBitsNumber++;
+        if (this.bitsBuffer.size() < EIGHT_BITS) {
+            this.bitsBuffer.add(bit);
+            this.significantBitsNumber++;
         } else {
-            this.formByte();
-            bitsBufferCounter = 0;
+            this.bytes.add(this.formByte());
+            this.bitsBuffer.clear();
             addBit(bit);
         }
         return this;
@@ -40,13 +36,14 @@ public class CompressionResultBuilder {
      * Add trailing bits if needed.
      */
     public void addTrailingBits() {
-        int bitsToAddNumber = EIGHT_BITS - convertBitsToString(bitsBuffer).length();
+        int bitsToAddNumber = EIGHT_BITS - convertBitsToString(this.bitsBuffer).length();
         if (bitsToAddNumber > 0) {
             for (int i = 0; i < bitsToAddNumber; i++) {
-                bitsBuffer.add(ZERO);
+                this.bitsBuffer.add(ZERO);
             }
         }
-        this.formByte();
+        this.bytes.add(this.formByte());
+        this.bitsBuffer.clear();
     }
 
     public CompressionResultBuilder setMetadata(Metadata metadata) {
@@ -63,8 +60,8 @@ public class CompressionResultBuilder {
     @Override
     public String toString() {
         return "CompressionResultBuilder: \n" +
-                "metadata=" + metadata +
-                "bytes=" + Arrays.toString(bytes.toArray()) + "\n" +
-                "bits=" + Arrays.toString(bits.toArray());
+                "metadata=" + this.metadata +
+                "bytes=" + Arrays.toString(this.bytes.toArray()); // + "\n" +
+        // "bits=" + Arrays.toString(bits.toArray());
     }
 }
