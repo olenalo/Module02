@@ -14,8 +14,8 @@ import static utils.IOUtils.readFile;
 import static utils.IOUtils.writeFile;
 
 public class Compressor implements Processor {
-    private String filename;
-    private byte[] inputDataBytes;
+    private String filename; // compressed file
+    private byte[] inputDataBytes; // TODO why not int
     private CompressionResult compressionResult;
 
     public Compressor(String initialFileName, String filename) {
@@ -54,7 +54,7 @@ public class Compressor implements Processor {
     private long[] defineFrequencies() {
         long[] frequencies = new long[BYTES_MAX_NUMBER];
         for (byte b : inputDataBytes) {
-            int i = b & 0xFF;
+            int i = b & 0xFF; // TODO consider why
             frequencies[i]++;
         }
         return frequencies;
@@ -74,15 +74,15 @@ public class Compressor implements Processor {
     }
 
     private Queue<Node> buildHuffmanTree(long[] frequencies) {
-        Queue<Node> nodes = createNodes(frequencies);
+        Queue<Node> nodes = createNodes(frequencies); // leaves
         while (nodes.size() > 1) {
             Node node1 = nodes.poll();
             Node node2 = nodes.poll();
-            Node newNode = new Node();
+            Node newNode = new Node(); // TODO rename meganode
             newNode.setLeft(node1);
             newNode.setRight(node2);
             newNode.setWeight(node1.getWeight() + node2.getWeight());
-            // We only need `value` in initial nodes (not here, in the "merged" ones)
+            // We only need `value` in leaf nodes
             nodes.add(newNode);
         }
         return nodes;

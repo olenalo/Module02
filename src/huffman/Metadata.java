@@ -57,6 +57,7 @@ public class Metadata implements Serializable {
     public int getKeyByValue(String value) {
         int key = -1;
         for (Map.Entry<Integer, Bit[]> entry : getDecodingTable().entrySet()) {
+            // TODO try to improve (avoid double conversion)
             if (value.equals(convertBitsToString(new ArrayList<>(Arrays.asList(entry.getValue()))))) {
                 key = entry.getKey();
                 break;

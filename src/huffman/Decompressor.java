@@ -46,6 +46,7 @@ public class Decompressor implements Processor {
             int b = this.inputBytes[i] & 0xFF;
             inputBytes[i] = b;  // debug only
             String bits = getBits((byte) b);
+            // TODO bitsToRemoveNo might not be needed
             if (bytesCounter == this.inputBytes.length - 1 && bitsToRemoveNumber > 0) {
                 bitsStrings[i] = bits.substring(0, bits.length() - bitsToRemoveNumber);
             } else {
@@ -72,6 +73,7 @@ public class Decompressor implements Processor {
     }
 
     private void decodeBits(String[] bitsStrings) {
+        // TODO: why String[], not simply String?..
         for (String bits : bitsStrings) {
             for (char bit : bits.toCharArray()) {
                 this.addBit(bit);

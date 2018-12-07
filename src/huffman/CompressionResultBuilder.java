@@ -8,7 +8,7 @@ import static configs.Bit.ZERO;
 import static configs.Configs.EIGHT_BITS;
 import static utils.ConversionUtils.convertBitsToString;
 
-public class CompressionResultBuilder {
+public class CompressionResultBuilder { // TODO make inner class
     private Metadata metadata;
     private List<Byte> bytes = new ArrayList<>();
     private List<Bit> bitsBuffer = new ArrayList<>();

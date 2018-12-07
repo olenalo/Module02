@@ -2,6 +2,8 @@ package huffman;
 
 public class Node {
 
+    // TODO try making with builder
+
     private int value;
     private long weight;
     private Node left;
